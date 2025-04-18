@@ -1,0 +1,59 @@
+version: '3.8'
+ 
+services:
+  mongodb:
+    image: mongo:6
+    restart: always
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+ 
+  menu-service:
+    build: ./menu-services
+    ports:
+      - "3001:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/menuservicedb
+    depends_on:
+      - mongodb
+ 
+  order-service:
+    build: ./order-services
+    ports:
+      - "3002:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/orderservicedb
+    depends_on:
+      - mongodb
+
+  payment-service:
+    build: ./payment-services
+    ports:
+      - "3003:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/paymentservicedb
+    depends_on:
+      - mongodb
+
+  inventory-service:
+    build: ./inventory-services
+    ports:
+      - "3004:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/inventoryservicedb
+    depends_on:
+      - mongodb
+
+  customer-service:
+    build: ./customer-services
+    ports:
+      - "3005:3000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/customerservicedb
+    depends_on:
+        - mongodb
+ 
+volumes:
+  mongo_data:
